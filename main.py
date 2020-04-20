@@ -17,12 +17,16 @@ try:
     #定期削除を実行したいchannelの情報を探す
     target_channel={}
     for channel_info in channel_list["channels"]:
-        if target_channel_name == channel_info['name']:
+        if target_channel_name == channel_info["name"]:
             target_channel = channel_info
             break
         pass
-    print(target_channel)
     
+    #対象のチャンネルのメッセージの取得
+    response = client.conversations_history(channel=target_channel["id"])
+
+    print(response)
+
 except SlackApiError as e:
     assert e.response["ok"] is False
     assert e.response["error"]  
