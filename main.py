@@ -52,7 +52,8 @@ target_channel_name = os.environ['DEV_NULL_CHANNEL']
 # 削除し始める経過時間を環境変数から受け取る
 delete_time = int(os.environ['DEV_NULL_DELETE_SECONDS'])
 
-# メッセージをクロールする感覚を環境変数から受け取る
+# メッセージをクロールする間隔を環境変数から受け取る
+crawl_interval = int(os.environ['DEV_NULL_CRAWL_INTERVAL'])
 
 try:
     # channel情報のリストを受け取る
@@ -68,7 +69,7 @@ try:
             break
         pass
     
-    scheduler(60, worker, False)
+    scheduler(crawl_interval, worker, False)
 
 
 except SlackApiError as e:
