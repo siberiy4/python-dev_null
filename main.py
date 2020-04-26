@@ -5,6 +5,7 @@ from datetime import datetime
 import re
 import time
 import threading
+from dotenv import load_dotenv
 
 # Slack APIで指定のチャンネルのメッセージを読み、指定時間以上経過したメッセージを削除する
 def worker():
@@ -21,6 +22,7 @@ def worker():
             if current_ts - int(re.sub(r'\.\d+$', '', message['ts'])) > delete_time:
                 response = client.chat_delete(
                     channel=target_channel["id"], ts=message["ts"])
+                print(response)
             else:
                 break
             pass
@@ -41,6 +43,9 @@ def scheduler(interval, f, wait=True):
         next_time = ((base_time - time.time()) % interval) or interval
         time.sleep(next_time)
 
+
+# 同じディレクトリにある.envファイルを読み込む
+load_dotenv(verbose=True)
 
 # 環境変数からAPIトークンを環境変数から受け取る
 slack_token = os.environ['SLACK_API_TOKEN']
@@ -68,7 +73,7 @@ try:
             target_channel = channel_info
             break
         pass
-    
+
     scheduler(crawl_interval, worker, False)
 
 
@@ -76,5 +81,3 @@ except SlackApiError as e:
     assert e.response["ok"] is False
     assert e.response["error"]
     print(e)
-
-
